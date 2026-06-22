@@ -61,6 +61,33 @@ let webpackConfig = {
 };
 
 webpackConfig.devServer = (devServerConfig) => {
+  // Compat shim: react-scripts 5.0.1 was built against webpack-dev-server v4
+  // but installed webpack-dev-server is v5 (per package resolutions). Translate
+  // the v4-only options to v5 equivalents so the dev server can boot.
+  const rsBefore = devServerConfig.onBeforeSetupMiddleware;
+  const rsAfter = devServerConfig.onAfterSetupMiddleware;
+  if (rsBefore || rsAfter) {
+    delete devServerConfig.onBeforeSetupMiddleware;
+    delete devServerConfig.onAfterSetupMiddleware;
+    const prior = devServerConfig.setupMiddlewares;
+    devServerConfig.setupMiddlewares = (middlewares, devServer) => {
+      if (rsBefore) rsBefore(devServer);
+      const out = prior ? prior(middlewares, devServer) : middlewares;
+      if (rsAfter) rsAfter(devServer);
+      return out;
+    };
+  }
+  if (devServerConfig.https !== undefined) {
+    const httpsCfg = devServerConfig.https;
+    delete devServerConfig.https;
+    if (httpsCfg) {
+      devServerConfig.server = {
+        type: "https",
+        options: typeof httpsCfg === "object" ? httpsCfg : {},
+      };
+    }
+  }
+
   // Add health check endpoints if enabled
   if (config.enableHealthCheck && setupHealthEndpoints && healthPluginInstance) {
     const originalSetupMiddlewares = devServerConfig.setupMiddlewares;

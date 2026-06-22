@@ -1,0 +1,37 @@
+{
+  "summary": "Full backend + frontend testing of SYNAPSE — Cosmic Brain Atlas. All 7 backend pytest cases pass (root, regions list/get/404, structures list/category counts, status create+list). All critical frontend flows verified via Playwright on the public REACT_APP_BACKEND_URL: landing hero+headline+CTAs, sticky 3D <canvas>, 5 stage cards present in DOM, 'Begin the Descent' smooth-scrolls, 'Open the Atlas' navigates to /explore, top nav (site-nav + nav-home/explore/library) works on all pages, /explore renders 8 region cards from GET /api/regions and updates region-detail with name/latin/function and Clinical Note (Frontal Lobe) or Curiosity (Parietal Lobe) when a card is clicked, /library renders 7 structure cards in 3 categories from GET /api/structures and expand/collapse with detail+metrics works. WebGL canvas mounts (R3F 9 + React 19) with only benign 'GPU stall due to ReadPixels' warnings.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Landing progress rail", "issues": ["When scroll reaches the absolute bottom (progress ~1.0) the last rail dot 'rail-pathway' becomes inactive because the active-window logic uses progress < next - 0.02 with next=1.01, so at progress=1.0 the test 1.0<0.99 fails. The pathway dot is still highlighted while scrolling through the pathway section, but ends inactive at the very end. Minor visual nit; not in critical scope."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_synapse_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Optional, minor) Tweak ProgressRail active logic so the final stage ('pathway') remains active at progress >= 0.94 instead of requiring progress < 0.99."
+  ],
+  "critical_code_review_comments": [
+    "server.py mixes import at module top-level and inside route (from fastapi import HTTPException is inside get_region). Move to top-level imports for clarity.",
+    "server.py uses deprecated @app.on_event('shutdown') — consider FastAPI lifespan context manager (not blocking).",
+    "Explorer.jsx mounts a heavy R3F Canvas + EffectComposer/Bloom on every visit; consider lazy loading or a low-power fallback (not blocking).",
+    "Library.jsx and Explorer.jsx repeat the same axios + loading/error pattern; could be extracted into a useFetch hook (DRY)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_synapse_api.py (new)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "N/A — app has no authentication.",
+  "seed_data_creation": "Test created one StatusCheck doc with client_name='TEST_qa' via POST /api/status (small, harmless).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend regression suite at /app/backend/tests/test_synapse_api.py — run: pytest backend/tests/test_synapse_api.py -v. Frontend public URL is set in /app/frontend/.env REACT_APP_BACKEND_URL=https://synapse-explorer-1.preview.emergentagent.com. WebGL works in this headless env but emits benign 'GPU stall due to ReadPixels' warnings — ignore. Only the 'pathway' rail-dot edge case at exact bottom of page is a minor visual quirk; everything else works.",
+  "rca of the issue": "No blocking issues. Edge-case rail-pathway-inactive-at-very-bottom RCA: in Landing.jsx STAGES, the last entry has at=0.94 and the lookup uses next = STAGES[i+1]?.at ?? 1.01; active condition is progress >= s.at - 0.02 && progress < next - 0.02, i.e. progress < 0.99. When user scrolls all the way (progress hits 1.0) the condition is false. Fix: change ?? 1.01 to ?? 1.1 (or compare with next without the -0.02 for the final stage)."
+}

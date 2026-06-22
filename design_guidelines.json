@@ -1,0 +1,140 @@
+{
+  "theme": "dark",
+  "archetype": "5 (Luxury Cinematic + Scientific)",
+  "typography": {
+    "fonts": [
+      {
+        "role": "heading",
+        "family": "Cormorant Garamond",
+        "fallback": "serif",
+        "weights": [300, 400, 600, 700],
+        "usage": "Massive cinematic headlines, awe-inspiring section titles."
+      },
+      {
+        "role": "body",
+        "family": "Outfit",
+        "fallback": "sans-serif",
+        "weights": [300, 400, 500],
+        "usage": "Clean, highly readable body copy for scientific descriptions."
+      },
+      {
+        "role": "mono",
+        "family": "IBM Plex Mono",
+        "fallback": "monospace",
+        "weights": [400, 500],
+        "usage": "Technical data readouts, coordinates, UI labels, overlines."
+      }
+    ],
+    "hierarchy": {
+      "h1": "text-5xl sm:text-6xl+ tracking-tighter leading-none font-light",
+      "h2": "text-3xl sm:text-4xl tracking-tight font-light",
+      "h3": "text-xl sm:text-2xl font-normal",
+      "body": "text-base leading-relaxed font-light text-white/80",
+      "mono_label": "text-xs tracking-[0.2em] uppercase font-mono text-white/60"
+    }
+  },
+  "colors": {
+    "background": {
+      "base": "#050505",
+      "surface": "rgba(20, 20, 25, 0.6)",
+      "surface_hover": "rgba(30, 30, 35, 0.8)",
+      "border": "rgba(255, 255, 255, 0.1)"
+    },
+    "text": {
+      "primary": "#FAFAFA",
+      "secondary": "#A0A0A5",
+      "muted": "#66666E"
+    },
+    "brand": {
+      "primary": "#D4AF37",
+      "primary_description": "Bioluminescent Gold / Synaptic Amber (for action potentials and flashes)",
+      "secondary": "#0A84FF",
+      "secondary_description": "Deep Azure Blue (for resting state neurons, myelin sheaths, structure)",
+      "accent": "#F2F2F2",
+      "accent_description": "Phosphorescent White (for highlights and intense energy bursts)"
+    },
+    "forbidden_colors": ["#9D4CDD", "#1B93A4", "generic purple/teal gradients"]
+  },
+  "layout_and_spacing": {
+    "philosophy": "Generous spacing, optical alignment, and high drama. Use 'Crystal Glass' surfaces floating above the 3D canvas.",
+    "grid_system": "Bento 'Tetris' Grid for UI elements overlaid on the 3D scene. Avoid center-everything. Use asymmetrical placements.",
+    "spacing_scale": {
+      "section": "py-24 md:py-32",
+      "container": "px-6 md:px-12",
+      "gap": "gap-8 md:gap-12"
+    },
+    "surfaces": {
+      "glassmorphism": "backdrop-blur-xl bg-black/40 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]",
+      "cards": "rounded-none or max rounded-md to maintain a technical/cinematic edge."
+    }
+  },
+  "components_strategy": {
+    "buttons": "Flat dark surfaces with a 1px border of white/20, hover state brightens border to white/60 and text to pure white. Mono font.",
+    "navigation": "Sticky crystal glass header with minimal links. z-50.",
+    "floating_labels": "Used in the interactive 3D explorer. Connected by SVG lines to 3D coordinates. Glassmorphism boxes with mono font readouts."
+  },
+  "scrollytelling_flow": {
+    "engine": "Lenis for smooth scrolling, Framer Motion for UI reveals, React Three Fiber (R3F) + Drei for the 3D canvas.",
+    "structure": "A single sticky 100vh canvas in the background. Scroll progress (0 to 1) drives the camera Z-position and scene transitions.",
+    "stages": [
+      {
+        "progress": "0% - 20%",
+        "scene": "Cosmic Dust to Silhouette",
+        "action": "Camera moves through a starfield (particle system) that coalesces into a glowing human silhouette (points/mesh)."
+      },
+      {
+        "progress": "20% - 40%",
+        "scene": "Into the Skull",
+        "action": "Silhouette transitions to a volumetric brain model. The camera pushes into the cerebral cortex, revealing gyri and sulci."
+      },
+      {
+        "progress": "40% - 60%",
+        "scene": "Neuron Level",
+        "action": "Macro transition: The brain surface dissolves into a network of multipolar pyramidal neurons. We focus on a single massive neuron with dendrites and a glowing soma."
+      },
+      {
+        "progress": "60% - 80%",
+        "scene": "Synaptic Flash",
+        "action": "Extreme close-up on the synaptic cleft. Particles (neurotransmitters) fire across the gap, triggering a massive 'Bioluminescent Gold' light burst."
+      },
+      {
+        "progress": "80% - 100%",
+        "scene": "Signal Pathway",
+        "action": "Camera races at warp speed along the axon (spinal cord highway), ending with an energetic flash representing limb muscle activation."
+      }
+    ]
+  },
+  "media": {
+    "images": [
+      {
+        "url": "https://images.pexels.com/photos/17954395/pexels-photo-17954395.jpeg",
+        "category": "texture_background",
+        "description": "Milky Way galaxy texture. Use this subtly blended into the background canvas or as an environment map to ground the 'cosmic' scale before zooming into the microscopic."
+      },
+      {
+        "url": "https://images.pexels.com/photos/3279307/pexels-photo-3279307.jpeg",
+        "category": "texture_background",
+        "description": "Orion constellation stars. Use as a subtle multiply/screen layer over the dark void for deep space texture."
+      }
+    ],
+    "icons": {
+      "library": "lucide-react",
+      "usage": "Use sparingly. Primarily for UI controls (Zoom, Pan, Info, Sound) and arrow indicators. 1px stroke weight for a refined technical look."
+    }
+  },
+  "accessibility_and_testing": {
+    "contrast": "Ensure text over the 3D canvas has sufficient drop-shadow or a glassmorphism backdrop to remain legible against bright flashes.",
+    "testing": "All interactive elements (buttons, nav links, explorer hot-spots) MUST include data-testid attributes (e.g., data-testid='explore-cortex-btn').",
+    "motion": "Respect prefers-reduced-motion. Provide a fallback static gallery mode or toggle for users who cannot tolerate the intense 3D zoom."
+  },
+  "instructions_to_main_agent": [
+    "Initialize React Three Fiber (`@react-three/fiber`, `@react-three/drei`, `three`).",
+    "Install `framer-motion` and `lenis` for scroll-linked animations.",
+    "Create a global scroll hook that passes a normalized progress value (0 to 1) down to the R3F components.",
+    "Do not attempt to load massive 3D models via URLs if they aren't provided. Instead, procedurally generate the neurons using instanced meshes, curves (CatmullRomCurve3 for axons/dendrites), and particle systems (Points) for the cosmic/synaptic dust.",
+    "Use Post-processing (`@react-three/postprocessing`) to add intense Bloom for the action potentials and synaptic flashes.",
+    "The UI should float over the canvas using fixed/sticky positioning and pointer-events-none where necessary.",
+    "Follow the exact color palette (Deep Void, Azure, Amber). NO PURPLE OR TEAL.",
+    "Ensure all fonts are imported correctly (Cormorant Garamond, Outfit, IBM Plex Mono) and applied globally."
+  ]
+}

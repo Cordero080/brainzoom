@@ -23,7 +23,7 @@ function HudCorner({ progress }) {
       <div className="value">{az}</div>
       <div className="stat mt-3">Stage</div>
       <div className="value">
-        {(STAGES.find((s, i) => progress < (STAGES[i + 1]?.at ?? 1.01))?.label ||
+        {(STAGES.find((s, i) => progress < (STAGES[i + 1]?.at ?? 1.1))?.label ||
           STAGES[STAGES.length - 1].label).toUpperCase()}
       </div>
     </div>
@@ -34,7 +34,7 @@ function ProgressRail({ progress }) {
   return (
     <div className="progress-rail hidden md:flex" data-testid="progress-rail">
       {STAGES.map((s, i) => {
-        const next = STAGES[i + 1]?.at ?? 1.01;
+        const next = STAGES[i + 1]?.at ?? 1.1;
         const active = progress >= s.at - 0.02 && progress < next - 0.02;
         return (
           <div
